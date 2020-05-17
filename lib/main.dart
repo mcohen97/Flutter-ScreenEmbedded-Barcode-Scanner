@@ -1,38 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:flutterapp/camera_controller.dart';
-import 'scanner_view.dart';
-
-const String _flashOnTxt = "FLASH ON";
-const String _flashOffTxt = "FLASH OFF";
-const String _cameraFrontTxt = "FRONT CAMERA";
-const String _cameraBackTxt = "BACK CAMERA";
+import 'package:flutterapp/scanner_view.dart';
+import 'camera_controller.dart';
 
 void main() => runApp(MaterialApp(home: QRViewExample()));
 
+const flashOn = 'FLASH ON';
+const flashOff = 'FLASH OFF';
+const frontCamera = 'FRONT CAMERA';
+const backCamera = 'BACK CAMERA';
 
 class QRViewExample extends StatefulWidget {
   const QRViewExample({
     Key key,
   }) : super(key: key);
 
-
   @override
   State<StatefulWidget> createState() => _QRViewExampleState();
 }
 
 class _QRViewExampleState extends State<QRViewExample> {
-
-  String barcodeText;
-  String cameraState =  _cameraFrontTxt;
-  String flashState = _flashOffTxt;
+  var qrText = '';
+  var flashState = flashOn;
+  var cameraState = frontCamera;
   CameraController controller;
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          ScannerView(flex: 1, onValueScanned: setScannedValue, onControllerCreated: setCameraController),
+          Expanded(
+            flex: 1,
+            child: ScannerView(onValueScanned: _setScannedValue, onControllerCreated: _onControllerCreated, key: qrKey),
+          ),
           Expanded(
             flex: 1,
             child: FittedBox(
@@ -40,7 +41,7 @@ class _QRViewExampleState extends State<QRViewExample> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text('This is the result of scan: $barcodeText'),
+                  Text('This is the result of scan: $qrText'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -49,10 +50,18 @@ class _QRViewExampleState extends State<QRViewExample> {
                         margin: EdgeInsets.all(8),
                         child: RaisedButton(
                           onPressed: () {
+                            if (controller != null) {
                               controller.toggleFlash();
-                              setState(() {
-                                flashState = controller.isFlashOn() ? _flashOnTxt : _flashOffTxt ;
-                              });
+                              if (_isFlashOn(flashState)) {
+                                setState(() {
+                                  flashState = flashOff;
+                                });
+                              } else {
+                                setState(() {
+                                  flashState = flashOn;
+                                });
+                              }
+                            }
                           },
                           child:
                           Text(flashState, style: TextStyle(fontSize: 20)),
@@ -62,10 +71,18 @@ class _QRViewExampleState extends State<QRViewExample> {
                         margin: EdgeInsets.all(8),
                         child: RaisedButton(
                           onPressed: () {
-                            controller?.toggleFlash();
-                            setState(() {
-                              cameraState = controller.isCameraFront() ? _cameraFrontTxt : _cameraBackTxt;
-                            });
+                            if (controller != null) {
+                              controller.flipCamera();
+                              if (_isBackCamera(cameraState)) {
+                                setState(() {
+                                  cameraState = frontCamera;
+                                });
+                              } else {
+                                setState(() {
+                                  cameraState = backCamera;
+                                });
+                              }
+                            }
                           },
                           child:
                           Text(cameraState, style: TextStyle(fontSize: 20)),
@@ -106,15 +123,28 @@ class _QRViewExampleState extends State<QRViewExample> {
     );
   }
 
-  void setScannedValue(String value){
+  bool _isFlashOn(String current) {
+    return flashOn == current;
+  }
+
+  bool _isBackCamera(String current) {
+    return backCamera == current;
+  }
+
+  void _onControllerCreated(CameraController controller) {
+    this.controller = controller;
+  }
+
+  void _setScannedValue(String value){
     setState(() {
-      barcodeText = value;
+      qrText = value;
     });
   }
 
-  void setCameraController(CameraController created){
-      controller = created;
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
-
 }
 

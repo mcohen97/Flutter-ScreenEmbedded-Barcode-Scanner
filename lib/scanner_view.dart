@@ -3,16 +3,21 @@ import 'package:flutterapp/camera_controller.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 
+
 class ScannerView extends StatefulWidget{
 
 
-  final Function onValueScanned;
-  final Function onControllerCreated;
-  final int flex;
+  Function _onValueScanned;
+  Function _onControllerCreated;
 
-  final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
+  GlobalKey _qrKey;
 
-  ScannerView({this.flex , this.onValueScanned, this.onControllerCreated});
+
+  ScannerView({Function onValueScanned, Function onControllerCreated, Key key}){
+    _onValueScanned = onValueScanned;
+    _onControllerCreated = onControllerCreated;
+    _qrKey = key;
+  }
 
   @override
   State<StatefulWidget> createState() => _ScannerViewState();
@@ -23,9 +28,7 @@ class _ScannerViewState extends State<ScannerView> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: widget.flex,
-      child: QRView(
+    return QRView(
         key: widget._qrKey,
         onQRViewCreated: _onQRViewCreated,
         overlay: QrScannerOverlayShape(
@@ -35,14 +38,13 @@ class _ScannerViewState extends State<ScannerView> {
           borderWidth: 10,
           cutOutSize: 300,
         ),
-      ),
-    );
+      );
   }
 
   void _onQRViewCreated(QRViewController controller) {
     this.controller = controller;
-    CameraController wrapper = CameraController(controller, widget.onValueScanned);
-    widget.onControllerCreated(wrapper);
+    CameraController wrapper = CameraController(controller, widget._onValueScanned);
+    widget._onControllerCreated(wrapper);
   }
 
 

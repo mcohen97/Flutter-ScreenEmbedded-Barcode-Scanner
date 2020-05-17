@@ -13,9 +13,7 @@ class CameraController{
     _flashOn = false;
     _frontCamera = false;
     _onValueScanned = onValueScanned;
-    wrappedController.scannedDataStream.listen((scanData) {
-      _onValueScanned(scanData);
-    });
+    wrappedController.scannedDataStream.listen((scanData) => _onValueScanned(scanData));
   }
 
 
@@ -47,5 +45,9 @@ class CameraController{
 
   void resumeCamera(){
     wrappedController.resumeCamera();
+  }
+
+  void dispose() {
+    wrappedController.dispose();
   }
 }
