@@ -2,6 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/scanner_view.dart';
 import 'camera_controller.dart';
+import 'package:soundpool/soundpool.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
+
+Soundpool _soundpool = Soundpool();
+
 
 void main() => runApp(MaterialApp(home: QRViewExample()));
 
@@ -138,8 +144,15 @@ class _QRViewExampleState extends State<QRViewExample> {
       qrText = value;
       if(!scannedCodes.contains(value)) {
         scannedCodes.add(value);
+        _playBeep();
       }
     });
+  }
+
+  Future<void> _playBeep() async {
+    var asset = await rootBundle.load("assets/beep.mp3");
+    var _alarmSound =  await _soundpool.load(asset);
+    var _alarmSoundStreamId = await _soundpool.play(_alarmSound);
   }
 
   @override
