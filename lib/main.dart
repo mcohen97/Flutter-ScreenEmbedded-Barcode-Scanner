@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 
 Soundpool _soundpool = Soundpool();
 
-
 void main() => runApp(MaterialApp(home: QRViewExample()));
 
 const flashOn = 'FLASH ON';
@@ -40,94 +39,40 @@ class _QRViewExampleState extends State<QRViewExample> {
         children: <Widget>[
           Expanded(
             flex: 1,
-            child: ScannerView(onValueScanned: _setScannedValue, onControllerCreated: _onControllerCreated, key: qrKey),
+            child: ScannerView(
+                onValueScanned: _setScannedValue,
+                onControllerCreated: _onControllerCreated,
+                key: qrKey),
           ),
           Expanded(
             flex: 1,
-            child: FittedBox(
-              fit: BoxFit.contain,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    width: 500,
-                    height: 50,
-                    child: Text('This is the result of scan: $qrText'),
-                  ),
-                  /*Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        child: RaisedButton(
-                          onPressed: () {
-                            if (controller != null) {
-                              controller.toggleFlash();
-                              setState(() {
-                                flashState =  controller.isFlashOn() ? flashOff : flashOn;
-                              });
-                            }
-                          },
-                          child:
-                          Text(flashState, style: TextStyle(fontSize: 20)),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        child: RaisedButton(
-                          onPressed: () {
-                            if (controller != null) {
-                              controller.flipCamera();
-                              setState(() {
-                                cameraState = !controller.isCameraFront()
-                                    ? frontCamera
-                                    : backCamera;
-                              });
-                            }
-                          },
-                          child:
-                          Text(cameraState, style: TextStyle(fontSize: 20)),
-                        ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        child: RaisedButton(
-                          onPressed: () {
-                            controller?.pauseCamera();
-                          },
-                          child: Text('pause', style: TextStyle(fontSize: 20)),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        child: RaisedButton(
-                          onPressed: () {
-                            controller?.resumeCamera();
-                          },
-                          child: Text('resume', style: TextStyle(fontSize: 20)),
-                        ),
-                      )
-                    ],
-                  ),*/
-                  Container(
-                    height: 100,
-                    width: 500,
-                    child: ListView(
-                      children: scannedCodes.map((code) => Card(child: Text(code),
-                        color: Colors.grey,
-                      )).toList(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'This is the result of scan: $qrText',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16),
                     ),
-                  )
-
-                ],
-              ),
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    padding: EdgeInsets.symmetric(vertical: 1, horizontal: 1),
+                    children: scannedCodes
+                        .map((code) => Card(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Text(code, textAlign: TextAlign.center,),
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                )
+              ],
             ),
           )
         ],
@@ -139,10 +84,10 @@ class _QRViewExampleState extends State<QRViewExample> {
     this.controller = controller;
   }
 
-  void _setScannedValue(String value){
+  void _setScannedValue(String value) {
     setState(() {
       qrText = value;
-      if(!scannedCodes.contains(value)) {
+      if (!scannedCodes.contains(value)) {
         scannedCodes.add(value);
         _playBeep();
       }
@@ -151,7 +96,7 @@ class _QRViewExampleState extends State<QRViewExample> {
 
   Future<void> _playBeep() async {
     var asset = await rootBundle.load("assets/beep.mp3");
-    var _alarmSound =  await _soundpool.load(asset);
+    var _alarmSound = await _soundpool.load(asset);
     var _alarmSoundStreamId = await _soundpool.play(_alarmSound);
   }
 
@@ -161,4 +106,3 @@ class _QRViewExampleState extends State<QRViewExample> {
     super.dispose();
   }
 }
-
