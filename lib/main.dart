@@ -55,15 +55,6 @@ class _QRViewExampleState extends State<QRViewExample> {
                               setState(() {
                                 flashState =  controller.isFlashOn() ? flashOff : flashOn;
                               });
-                              /*if (controller.isFlashOn()) {
-                                setState(() {
-                                  flashState = flashOff;
-                                });
-                              } else {
-                                setState(() {
-                                  flashState = flashOn;
-                                });
-                              }*/
                             }
                           },
                           child:
@@ -81,15 +72,6 @@ class _QRViewExampleState extends State<QRViewExample> {
                                     ? frontCamera
                                     : backCamera;
                               });
-                              /*if (!controller.isCameraFront()) {
-                                setState(() {
-                                  cameraState = frontCamera;
-                                });
-                              } else {
-                                setState(() {
-                                  cameraState = backCamera;
-                                });
-                              }*/
                             }
                           },
                           child:
@@ -131,13 +113,6 @@ class _QRViewExampleState extends State<QRViewExample> {
     );
   }
 
-  bool _isFlashOn(String current) {
-    return flashOn == current;
-  }
-
-  bool _isBackCamera(String current) {
-    return backCamera == current;
-  }
 
   void _onControllerCreated(CameraController controller) {
     this.controller = controller;
