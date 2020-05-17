@@ -32,7 +32,7 @@ class _QRViewExampleState extends State<QRViewExample> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          ScannerView(onValueScanned: setScannedValue, onControllerCreated: setCameraController),
+          ScannerView(flex: 1, onValueScanned: setScannedValue, onControllerCreated: setCameraController),
           Expanded(
             flex: 1,
             child: FittedBox(

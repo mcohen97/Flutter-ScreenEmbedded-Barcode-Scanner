@@ -6,12 +6,13 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 class ScannerView extends StatefulWidget{
 
 
-  Function onValueScanned;
-  Function onControllerCreated;
+  final Function onValueScanned;
+  final Function onControllerCreated;
+  final int flex;
 
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
 
-  ScannerView({this.onValueScanned, this.onControllerCreated});
+  ScannerView({this.flex , this.onValueScanned, this.onControllerCreated});
 
   @override
   State<StatefulWidget> createState() => _ScannerViewState();
@@ -23,7 +24,7 @@ class _ScannerViewState extends State<ScannerView> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 4,
+      flex: widget.flex,
       child: QRView(
         key: widget._qrKey,
         onQRViewCreated: _onQRViewCreated,
