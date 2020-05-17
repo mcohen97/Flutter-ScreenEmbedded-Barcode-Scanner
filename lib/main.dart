@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/scanner_view.dart';
 import 'camera_controller.dart';
@@ -20,6 +21,7 @@ class QRViewExample extends StatefulWidget {
 
 class _QRViewExampleState extends State<QRViewExample> {
   String qrText = '';
+  List<String> scannedCodes = [];
   String flashState = flashOn;
   String cameraState = frontCamera;
   CameraController controller;
@@ -41,8 +43,12 @@ class _QRViewExampleState extends State<QRViewExample> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Text('This is the result of scan: $qrText'),
-                  Row(
+                  Container(
+                    width: 500,
+                    height: 50,
+                    child: Text('This is the result of scan: $qrText'),
+                  ),
+                  /*Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
@@ -103,7 +109,17 @@ class _QRViewExampleState extends State<QRViewExample> {
                         ),
                       )
                     ],
-                  ),
+                  ),*/
+                  Container(
+                    height: 100,
+                    width: 500,
+                    child: ListView(
+                      children: scannedCodes.map((code) => Card(child: Text(code),
+                        color: Colors.grey,
+                      )).toList(),
+                    ),
+                  )
+
                 ],
               ),
             ),
@@ -113,7 +129,6 @@ class _QRViewExampleState extends State<QRViewExample> {
     );
   }
 
-
   void _onControllerCreated(CameraController controller) {
     this.controller = controller;
   }
@@ -121,6 +136,9 @@ class _QRViewExampleState extends State<QRViewExample> {
   void _setScannedValue(String value){
     setState(() {
       qrText = value;
+      if(!scannedCodes.contains(value)) {
+        scannedCodes.add(value);
+      }
     });
   }
 
