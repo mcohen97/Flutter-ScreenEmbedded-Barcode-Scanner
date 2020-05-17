@@ -19,9 +19,9 @@ class QRViewExample extends StatefulWidget {
 }
 
 class _QRViewExampleState extends State<QRViewExample> {
-  var qrText = '';
-  var flashState = flashOn;
-  var cameraState = frontCamera;
+  String qrText = '';
+  String flashState = flashOn;
+  String cameraState = frontCamera;
   CameraController controller;
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
@@ -52,7 +52,10 @@ class _QRViewExampleState extends State<QRViewExample> {
                           onPressed: () {
                             if (controller != null) {
                               controller.toggleFlash();
-                              if (_isFlashOn(flashState)) {
+                              setState(() {
+                                flashState =  controller.isFlashOn() ? flashOff : flashOn;
+                              });
+                              /*if (controller.isFlashOn()) {
                                 setState(() {
                                   flashState = flashOff;
                                 });
@@ -60,7 +63,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                                 setState(() {
                                   flashState = flashOn;
                                 });
-                              }
+                              }*/
                             }
                           },
                           child:
@@ -73,7 +76,12 @@ class _QRViewExampleState extends State<QRViewExample> {
                           onPressed: () {
                             if (controller != null) {
                               controller.flipCamera();
-                              if (_isBackCamera(cameraState)) {
+                              setState(() {
+                                cameraState = !controller.isCameraFront()
+                                    ? frontCamera
+                                    : backCamera;
+                              });
+                              /*if (!controller.isCameraFront()) {
                                 setState(() {
                                   cameraState = frontCamera;
                                 });
@@ -81,7 +89,7 @@ class _QRViewExampleState extends State<QRViewExample> {
                                 setState(() {
                                   cameraState = backCamera;
                                 });
-                              }
+                              }*/
                             }
                           },
                           child:
